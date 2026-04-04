@@ -1,0 +1,17 @@
+name: Deploy on Render
+
+on:
+    workflow_run:
+        workflows: ["Backend CI"]
+        types:
+            - completed
+        branches:
+            - main
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+        steps:
+            - name: Deploy to Render
+              run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}

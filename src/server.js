@@ -1,11 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 
 // TODO: replace with your own MongoDB connection string
-mongoose.connect("mongodb://127.0.0.1:27017/url_shortener");
+const mongoURI = process.env.MONGODB_URI;
+mongoose.connect(mongoURI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(err));
+
 
 const urlSchema = new mongoose.Schema({
   originalUrl: String,
