@@ -7,6 +7,7 @@ on:
             - completed
         branches:
             - main
+            - feature/dohuuphuoc2303@gmail.com
 jobs:
     deploy:
         runs-on: ubuntu-latest
