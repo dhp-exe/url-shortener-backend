@@ -26,6 +26,11 @@ const urlSchema = new mongoose.Schema({
 
 const Url = mongoose.model("Url", urlSchema);
 
+//health check
+app.get("/", (req, res) => {
+  res.json({ message: "Devcamp URL Shortener API is running!" });
+});
+
 app.post("/api/urls", async (req, res) => {
 
   const originalUrl = req.body.originalUrl;
