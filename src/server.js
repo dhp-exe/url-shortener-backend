@@ -37,6 +37,12 @@ app.post("/api/urls", async (req, res) => {
     return res.status(400).json({ error: "Invalid URL" });
   }
 
+  //url exists in db, return
+  const existing = await Url.findOne({ originalUrl });
+  if (existing) {
+    return res.json(existing);
+  }
+
   const shortCode = encodeBase62(Date.now());
 
   const newUrl = await Url.create({
