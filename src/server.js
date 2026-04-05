@@ -1,6 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const validator = require("validator");
 const cors = require("cors");
+
+const encodeBase62 = require("./base62");
+
 require('dotenv').config();
 
 const app = express();
@@ -23,9 +27,21 @@ const urlSchema = new mongoose.Schema({
 const Url = mongoose.model("Url", urlSchema);
 
 app.post("/api/urls", async (req, res) => {
+
+  const originalUrl = req.body.originalUrl;
+
+  if (!originalUrl) {
+    return res.status(400).json({ error: "originalUrl is required" });
+  }
+  if (!validator.isURL(originalUrl)) {
+    return res.status(400).json({ error: "Invalid URL" });
+  }
+
+  const shortCode = encodeBase62(Date.now());
+
   const newUrl = await Url.create({
-    originalUrl: req.body.originalUrl,
-    shortCode: req.body.shortCode,
+    originalUrl,
+    shortCode,
   });
 
   res.json(newUrl);
@@ -54,6 +70,7 @@ app.get("/:shortCode", async (req, res) => {
   res.redirect(url.originalUrl);
 });
 
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
